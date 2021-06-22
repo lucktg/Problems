@@ -13,62 +13,61 @@ public class SpiralMatrix {
     //https://leetcode.com/problems/spiral-matrix/
     public static  List<Integer> spiralOrder(int[][] matrix) {
         List<Integer> result = new ArrayList<>();
+        int items = matrix.length*matrix[0].length;
         int limitRight = matrix[0].length;
-        int limitLeft = 0;
         int limitDown = matrix.length;
-        int limitUp = limitDown - 1;
-        int initialRow = 0;
-        int initialColumn = 0;
-        for(int count = 0; count < matrix.length*matrix[0].length; ){
-            count = right(matrix, initialColumn,initialRow, limitRight, result, count);
-            count = down(matrix, initialRow+1, limitRight-1, limitDown, result, count);
-            count = left(matrix, limitDown, limitRight-1, limitLeft, result, count);
-            count = up(matrix, limitUp, limitLeft, initialRow+1, result, count);
-            limitRight--;
-            limitLeft++;
-            limitDown--;
-            limitUp--;
-            initialRow++;
-            initialColumn++;
+        int limitUp = 0;
+        int limitLeft = -1;
+        int currentRow = 0;
+        int currentColumn = 0;
+        boolean right = true, left = false, up = false, down = false;
+        for (int i = 0; i < items; i++) {
+            if(right) {                
+                result.add(matrix[currentRow][currentColumn]);
+                currentColumn++;
+                if(currentColumn == limitRight) {
+                    right = false;
+                    down =true; 
+                    currentColumn--;
+                    currentRow++;
+                    continue;
+                }
+            } else if(down) {
+                result.add(matrix[currentRow][currentColumn]);
+                currentRow++;
+                if(currentRow == limitDown) {
+                    down = false;
+                    left =true;
+                    currentRow--;
+                    currentColumn--;
+                    continue;
+                }
+            } else if(left) {
+                result.add(matrix[currentRow][currentColumn]);
+                currentColumn--;
+                if(currentColumn == limitLeft) {
+                    left = false;
+                    up =true; 
+                    currentRow--;
+                    currentColumn++;
+                    continue;
+                }
+            } else if(up) {
+                result.add(matrix[currentRow][currentColumn]);
+                currentRow--;
+                if(currentRow == limitUp) {
+                    up = false;
+                    right =true; 
+                    limitUp++;
+                    limitLeft++;
+                    limitRight--;
+                    limitDown--;
+                    currentRow++;
+                    currentColumn++;
+                    continue;
+                }
+            }
         }
-
         return result;
-        
-    }
-
-    private static int right(int[][] matrix,int initialColumn, int row, int limitRight, List<Integer> result, int count) {
-        for (int i = initialColumn; i < limitRight; i++ ) {
-            if (count == matrix.length*matrix[0].length) break;
-            result.add(matrix[row][i]);
-            count++;
-        }
-        return count;
-    }
-    
-    private static  int down(int[][] matrix, int row,int column,int limitDown,  List<Integer> result, int count) {
-        for (int i = row; i < limitDown;  i++) {
-            if (count == matrix.length*matrix[0].length) break;
-            result.add(matrix[i][column]);
-            count++;
-        }
-        return count;
-    }
-    
-    private static  int left(int[][] matrix, int row,int column, int limitLeft, List<Integer> result, int count) {
-        for (int i = column-1; i >= limitLeft;  i--) {
-            if (count == matrix.length*matrix[0].length) break;
-            result.add(matrix[row-1][i]);
-            count++;
-        }
-        return count;
-    }
-    
-    private static  int up(int[][] matrix, int row,int column,int limitUp,  List<Integer> result, int count) {
-        for (int i = row-1; i >= limitUp;  i--) {
-            if (count == matrix.length*matrix[0].length) break;
-            result.add(matrix[i][column]);
-            count++;
-        }
-        return count;
     }
 }
